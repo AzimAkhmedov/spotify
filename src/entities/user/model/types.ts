@@ -18,4 +18,6 @@ export interface ICreateUser {
 export interface IUserState {
   isAuth: boolean;
   user: IUser | null;
+  authLoading?: boolean;
+  authError?: string | null;
 }

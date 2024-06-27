@@ -1,3 +1,4 @@
+import { IUserResponse } from "@/entities/user";
 import { instance } from "./instance";
 
 export interface ILoginRequest {
@@ -6,7 +7,7 @@ export interface ILoginRequest {
 }
 
 export const LoginRequest = (data: ILoginRequest) =>
-  instance.post("/auth/login", data);
+  instance.post<IUserResponse>("/auth/login", data);
 
 export const RegisterRequest = (data: ILoginRequest) =>
   instance.post("/auth/register", data);

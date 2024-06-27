@@ -6,6 +6,10 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebookSquare, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { LoginRequest, RegisterRequest } from "@/shared/api/auth";
+import { useAppDispatch, useAppSelector } from "@/shared/hooks/reduxHooks";
+import { IUser, IUserResponse, login } from "@/entities/user";
+import { useToast } from "@/shared/components/ui/use-toast";
+import { useCookies } from "react-cookie";
 
 interface IFormInputs {
   email: string;
@@ -14,17 +18,27 @@ interface IFormInputs {
 }
 
 const AuthForm = () => {
+  const dispatch = useAppDispatch();
+  const loginState = useAppSelector((state) => state.user);
+
+  const { toast } = useToast();
   const [pageMode, setPageMode] = useState<"login" | "register">("login");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState<boolean>(false);
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IFormInputs>();
+  const [cookies, setCookie, removeCookie] = useCookies<string>(["auth"]);
+
+  const { control, handleSubmit } = useForm<IFormInputs>();
 
   const onLoginSubmit: SubmitHandler<IFormInputs> = (data) => {
-    LoginRequest(data).then((res) => console.log(res));
+    if (loginState.authLoading) return;
+
+    dispatch(login(data)).then((res) => {
+      toast({
+        title: "Welcome... " + (res.payload as IUserResponse).user.email,
+        description: "You have successfully logged in",
+      });
+      setCookie("auth-spot", res.payload);
+    });
   };
   const onRegisterSubmit: SubmitHandler<IFormInputs> = (data) => {
     if (data.password !== data.repeatPassword) {
@@ -171,7 +185,7 @@ const AuthForm = () => {
           Already signed? Then{" "}
           <span
             className="underline font-bold text-white cursor-pointer"
-            onClick={() => setPageMode("register")}
+            onClick={() => setPageMode("login")}
           >
             login here
           </span>
