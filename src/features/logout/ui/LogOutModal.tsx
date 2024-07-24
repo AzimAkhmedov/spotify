@@ -1,24 +1,29 @@
 import React from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/shared/components/ui/alert-dialog";
+import { Button } from "@/shared/components/ui/button";
+
+import cookies from "js-cookie";
 
 interface LogOutModalProps {
-  triggerText: string;
+  open: boolean;
+  setOpen(open: boolean): void;
 }
 
-const LogoutModal = ({ triggerText }: LogOutModalProps) => {
+const LogoutModal = ({ open, setOpen }: LogOutModalProps) => {
+  const handleLogout = () => {
+    cookies.remove("auth-spot");
+    window.location.reload();
+  };
   return (
-    <>
-      <AlertDialogTrigger>{triggerText}</AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={(o) => setOpen(o)}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -28,11 +33,15 @@ const LogoutModal = ({ triggerText }: LogOutModalProps) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => {}}>Continue</AlertDialogAction>
+          <AlertDialogCancel onClick={() => setOpen(false)}>
+            Cancel
+          </AlertDialogCancel>
+          <Button onClick={handleLogout} className=" bg-red-500 text-white">
+            Logout
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
-    </>
+    </AlertDialog>
   );
 };
 

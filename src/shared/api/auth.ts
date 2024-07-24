@@ -1,4 +1,4 @@
-import { IUserResponse } from "@/entities/user";
+import { IOauthResponse, IUserResponse } from "@/entities/user";
 import { instance } from "./instance";
 
 export interface ILoginRequest {
@@ -11,3 +11,11 @@ export const LoginRequest = (data: ILoginRequest) =>
 
 export const RegisterRequest = (data: ILoginRequest) =>
   instance.post("/auth/register", data);
+
+export const getOAuthContext = (token: string) => {
+  return instance.post<IOauthResponse>("/auth/google-login", { token });
+};
+
+export const getOAuthContextSpotify = (token: string) => {
+  return instance.post<IOauthResponse>("/auth/spotify-login", { token });
+};

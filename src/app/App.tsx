@@ -5,23 +5,25 @@ import "./styles/index.css";
 
 import { specifyTheme } from "@/shared/utils";
 import { RouterProvider } from "react-router-dom";
-import { router } from "./routes";
 import { Provider } from "react-redux";
 import { CookiesProvider, useCookies } from "react-cookie";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import store from "./store";
+import { router } from "./routes";
 import { Toaster } from "@/shared/components/ui/toaster";
-import { useAppDispatch } from "@/shared/hooks/reduxHooks";
-import { IUserResponse, setUser } from "@/entities/user";
-// import { IUserResponse, setUser } from "@/entities/user";
+import cookies from "js-cookie";
+
+import { IUserResponse } from "@/entities/user";
 
 function App() {
-  const [cookies, setCookie] = useCookies(["auth-spot"]);
+  // const [cookies] = useCookies(["auth-spot"]);
 
   useEffect(() => {
-    const user = cookies["auth-spot"] as IUserResponse;
+    const user = cookies.get("auth-spot")
+
     if (user) {
-      console.log(user);
+      console.log("cookies: ", user);
     }
     specifyTheme();
   }, []);
@@ -29,10 +31,12 @@ function App() {
   return (
     <Provider store={store}>
       <CookiesProvider>
-        <main className="container mx-auto">
-          <RouterProvider router={router} />
-          <Toaster />
-        </main>
+        <GoogleOAuthProvider clientId="219155830420-558nie9v8pghq07ujsja2p1345t5p6gb.apps.googleusercontent.com">
+          <main className="container mx-auto">
+            <RouterProvider router={router} />
+            <Toaster />
+          </main>
+        </GoogleOAuthProvider>
       </CookiesProvider>
     </Provider>
   );

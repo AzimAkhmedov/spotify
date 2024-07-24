@@ -20,4 +20,24 @@ export interface IUserState {
   user: IUser | null;
   authLoading?: boolean;
   authError?: string | null;
+  authStep:
+    | "login"
+    | "register"
+    | "forgot-password"
+    | "register-from-oauth"
+    | "redirecting";
+  defaultUserCredentials?: {
+    email?: string;
+    name?: string;
+    picture?: string | null;
+  };
+}
+
+export interface IOauthResponse {
+  user?: IUser;
+  token?: string;
+  message: string;
+  email?: string;
+  name?: string;
+  picture?: string | null;
 }
